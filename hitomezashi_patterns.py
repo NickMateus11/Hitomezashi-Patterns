@@ -5,8 +5,8 @@ import random
 def main():
     x_dim, y_dim = 320, 240
 
-    x_cells = 8
-    y_cells = 8
+    x_cells = 16
+    y_cells = 16
     
     x_step = (x_dim//x_cells)
     y_step = (y_dim//y_cells)
