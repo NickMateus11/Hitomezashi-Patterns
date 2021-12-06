@@ -3,7 +3,7 @@
 ## Example:
 <br>
 
-![example](./output_example.png)
+![example](./images/output_example.png)
 
 Inspiration from this [Numberphile Video](https://youtu.be/JbfhzlMk2eY)
 
