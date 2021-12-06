@@ -35,8 +35,9 @@ def main():
 
         key = cv2.waitKey(0) & 0xFF
         if key == ord('s'):
-            print("saving image")
-            cv2.imwrite("output.png", canvas)
+            print("saving image..")
+            print("Success" if cv2.imwrite("images/output.png", canvas) \
+                else "Failed..specified path doesn't exist")
         elif key == ord('q'):
             break
 
