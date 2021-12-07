@@ -2,9 +2,8 @@ import cv2
 import numpy as np
 import random
 
-padding = 10
 
-def hitomezashi(seq_x, seq_y, x_dim, y_dim):
+def hitomezashi(seq_x, seq_y, x_dim, y_dim, padding=10):
     canvas = np.zeros((y_dim+2*padding, x_dim+2*padding), dtype=np.uint8)
 
     x_num = len(seq_x)
