@@ -40,8 +40,8 @@ def hitomezashi(seq_x, seq_y, x_dim, y_dim, padding=10):
     
     return canvas
 
-def main():
-    x_dim, y_dim = 800, 608
+def random_pattern():
+    x_dim, y_dim = 800, 600
 
     x_cells = 16
     y_cells = 16
@@ -62,6 +62,33 @@ def main():
             break
 
     cv2.destroyAllWindows()
+
+
+def message_pattern(msg):
+    x_dim, y_dim = 800, 800
+    
+    bin_msg = []
+    for char in msg:
+        bits = bin(ord(char)).split('b')[1]
+        print(bits)
+        bin_msg += [int(bit) for bit in ([0]*(8-len(bits)) + list(bits))]
+    print(bin_msg)
+
+    input_data_x = bin_msg
+    input_data_y = bin_msg
+        
+    canvas = hitomezashi(input_data_x, input_data_y, x_dim, y_dim)        
+    cv2.imshow("win", canvas)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def main():
+
+    # random_pattern()
+    message_pattern("a")
+
 
 if __name__ == '__main__':
     main()
