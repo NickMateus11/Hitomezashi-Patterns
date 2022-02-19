@@ -116,7 +116,8 @@ def message_pattern(msg_x,msg_y):
 def main():
 
     img, x_cells, y_cells = message_pattern("HELLO", "WORLD")
-    img = flood_fill(img, [(77,200,240), (154,105, 228)], x_cells, y_cells, padding=10)  
+    colours =  [(77,200,240), (154,105, 228), (100,235,127)]
+    img = flood_fill(img, colours, x_cells, y_cells, padding=10)  
  
     cv2.imshow("window", img)
     cv2.waitKey(0)
