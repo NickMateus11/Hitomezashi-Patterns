@@ -10,8 +10,8 @@ def hitomezashi(seq_x, seq_y, x_dim, y_dim, padding=10):
     x_num = len(seq_x)
     y_num = len(seq_y)
     
-    x_step = (x_dim//x_num)
-    y_step = (y_dim//y_num)
+    x_step = (x_dim/x_num)
+    y_step = (y_dim/y_num)
     
     for x in range(x_num):
         for y in range(y_num//2):
@@ -19,8 +19,8 @@ def hitomezashi(seq_x, seq_y, x_dim, y_dim, padding=10):
             x_coord = x * x_step
             y_coord = y*(2*y_step) + (bit*y_step)
             cv2.line(canvas, 
-                    (x_coord+padding, y_coord+padding), 
-                    (x_coord+padding, y_coord+y_step+padding), 
+                    (int(x_coord+padding), int(y_coord+padding)), 
+                    (int(x_coord+padding), int(y_coord+y_step+padding)), 
                     (0,)*3, 
                     thickness=1
                 )
@@ -31,13 +31,13 @@ def hitomezashi(seq_x, seq_y, x_dim, y_dim, padding=10):
             x_coord = x*(2*x_step) + (bit*x_step)
             y_coord = y * y_step
             cv2.line(canvas, 
-                    (x_coord+padding, y_coord+padding), 
-                    (x_coord+x_step+padding, y_coord+padding), 
+                    (int(x_coord+padding), int(y_coord+padding)), 
+                    (int(x_coord+x_step+padding), int(y_coord+padding)), 
                     (0,)*3, 
                     thickness=1
                 )
 
-    cv2.rectangle(canvas, (padding, padding), (x_num*x_step+padding, y_num*y_step+padding), (0,)*3, thickness=1)
+    cv2.rectangle(canvas, (padding, padding), (int(x_num*x_step+padding), int(y_num*y_step+padding)), (0,)*3, thickness=1)
     
     return canvas
 
@@ -66,30 +66,33 @@ def random_pattern():
 
 def flood_fill(img, colours, x_cells, y_cells, padding):
     c_idx = 0
-    cell_width, cell_height = len(img[0])//x_cells, len(img)//y_cells
+    cell_width, cell_height = (len(img[0])-2*padding)/x_cells, (len(img)-2*padding)/y_cells
     for i in range(y_cells):
         for j in range(x_cells):
-            x,y = j*cell_width+padding + cell_width//2, i*cell_height+padding + cell_height//2
+            x,y = j*cell_width+padding + cell_width/2, i*cell_height+padding + cell_height/2
 
-            if j!=0 and tuple(img[y][x]) == colours[c_idx%len(colours)][::-1] \
-                or (i!=0 and j==0 and tuple(img[y-cell_height][x]) == colours[c_idx%len(colours)][::-1]): # next fill colour is same as current cell
+            # check neighbours to ensure colouring is correct
+            if i and j and (tuple(img[int(y)][int(x-cell_width)]) == colours[c_idx%len(colours)][::-1] \
+                or tuple(img[int(y-cell_height)][int(x)]) == colours[c_idx%len(colours)][::-1]):
                 c_idx += 1
-            
-            if tuple(img[y][x]) == (255,)*3:
-                mask = skimage.flood(img[..., 0], (y,x))
+            elif j and tuple(img[int(y)][int(x-cell_width)]) == colours[c_idx%len(colours)][::-1]:
+                c_idx += 1
+            elif i and tuple(img[int(y-cell_height)][int(x)]) == colours[c_idx%len(colours)][::-1]:
+                c_idx += 1
+                    
+            if tuple(img[int(y)][int(x)]) == (255,)*3:
+                mask = skimage.flood(img[..., 0], (int(y),int(x)))
                 img[mask] = colours[c_idx%len(colours)][::-1] # BGR
+                # cv2.circle(img, (int(x),int(y)), 1, colours[c_idx%len(colours)][::-1], thickness=-1)
+                # cv2.imshow("window", img)
+                # cv2.waitKey(0)
                 c_idx += 1
-                # cv2.circle(img, (x,y), 3, colours[c_idx%len(colours)][::-1], thickness=-1)
-            # cv2.imshow("window", img)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+                # cv2.destroyAllWindows()
     return img
 
 def message_pattern(msg_x,msg_y):
-    if len(msg_x)>len(msg_y):
-        x_dim, y_dim = int(len(msg_x)/len(msg_y) * 800), 800
-    else:
-        x_dim, y_dim = 800, int(len(msg_y)/len(msg_x) * 800)
+    len_xy_ratio = len(msg_x)/len(msg_y)
+    x_dim, y_dim = int(800*(1 if len_xy_ratio>1 else len_xy_ratio)), int(800*(1 if len_xy_ratio<1 else 1/len_xy_ratio))
     
     bin_msg_x = []
     bin_msg_y = []
@@ -116,7 +119,7 @@ def message_pattern(msg_x,msg_y):
 def main():
 
     img, x_cells, y_cells = message_pattern("HELLO", "WORLD")
-    colours =  [(77,200,240), (154,105, 228), (100,235,127)]
+    colours =  [(154,105, 228), (100,235,127)]
     img = flood_fill(img, colours, x_cells, y_cells, padding=10)  
  
     cv2.imshow("window", img)
