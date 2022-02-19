@@ -1,11 +1,12 @@
 # Hitomezashi Patterns
 
-## Example:
+## Examples:
 <br>
 
 ![example](./images/output_example.png)
 
-Inspiration from this [Numberphile Video](https://youtu.be/JbfhzlMk2eY)
+<br>
 
-### TODO:
-- Colour the surface (is always two-colourable)
+![example](./images/colour_example.png)
+
+Inspiration from this [Numberphile Video](https://youtu.be/JbfhzlMk2eY)
